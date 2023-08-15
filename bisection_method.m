@@ -1,43 +1,23 @@
-% using bisection method to calculate root of a function
+function func_val = bisection_method(func_str)
 
-x = linspace(0,2,301);
-y = x.*x - 3;
-xaxis = 0.*x;
+func = str2func(func_str);
 
-yy = linspace(-3,1,301);
-yaxis = 0.*yy;
+xl = input("Enter xl : "); % lower limit of x
+xu = input("Enter xu : "); % upper limit of x
+es = input("Enter es : "); % desired error percentage
+sign_fig = input("Enter no of significant figures : "); % no of significant figures
+xr = 0; % initial guess
+ea = 100; % initial error 
+iterations = 0; % no of iterations
 
-figure(1)
+fprintf('# BISECTION METHOD SOLUTION : \n');
 
-p = plot(x,y,x,xaxis,yaxis,yy)
+while((ea >= es) && (iterations < 50))
 
-p(1).LineWidth = 2;
-p(1).Color = "red";
-p(1).LineStyle = ':';
-
-p(2).LineWidth = 1.5;
-p(2).Color = "black";
-p(2).LineStyle = '-';
-
-p(3).LineWidth = 1.5;
-p(3).Color = "black";
-p(3).LineStyle = '-';
-
-grid on
-grid minor
-
-
-xl = input("Enter xl : ");
-xu = input("Enter xu : ");
-es = input("Enter es : ");
-xr = 2;
-ea = 100.0;
-count = 0;
-
-while(ea > es)
-    count = count + 1;
+    iterations = iterations + 1;
     x = (xl + xu)/2;
-    val = (xl*xl - 3)*(x*x - 3);
+    val = (func(xl))*(func(x));
+
     if val < 0
         xu = x;
     elseif val > 0
@@ -45,10 +25,19 @@ while(ea > es)
     else
         xr = x;
     end
+
     ea = (x - xr)/x*100;
     ea = abs(ea);
     xr = x;
-    fprintf('Iteration : %d,    Value : %.9f,   Error : %.7f \n', count, xr, ea);
+
+    xr = round(xr, sign_fig, "significant");
+    xl = round(xl, sign_fig, "significant");
+    xu = round(xu, sign_fig, "significant");
+    ea = round(ea, sign_fig, "significant");
+
+    fprintf('Iteration : %d,    x_l : %.9f,    x_u : %.9f,    x_r : %.9f,   error : %.9f \n', iterations, xl, xu, xr, ea);
 end
 
-fprintf('Final Answer : %.9f\n', xr);
+func_val = xr;
+
+end
